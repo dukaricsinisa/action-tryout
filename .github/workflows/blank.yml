@@ -37,9 +37,9 @@ release-to-pypi:
       run: nohup devpi-server &
     - name:  Run anything ...
       run: |
-      echo "Sleeping"
-      sleep 10
-      echo "Done sleeping"
+        echo "Sleeping"
+        sleep 10
+        echo "Done sleeping"
     - name: Kill Devpi
       run: pkill Python
       
