@@ -13,24 +13,41 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+ release-to-pypi:
+    needs: create-release
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    container:
+        image: spyrosoftsa/scargo-dev:1.1
+        options: --user root
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+          fetch-depth: 0
+#    - name: Set up Python environment
+#      uses: actions/setup-python@v2
+#      with:
+#        python-version: 3.8
+    - name: Install dependencies
+      run: |        
+        pip install devpi-server
+        devpi-init
+        pip install flit
+    - name: Run Devpi
+      run: nohup devpi-server &
+    - name:  Run anything ...
+      run: |
+      echo "Sleeping"
+      sleep 10
+      echo "Done sleeping"
+    - name: Kill Devpi
+      run: pkill Python
+      
+#    - name: Build and upload to PyPI
+#      run: |
+#        git config --global --add safe.directory /__w/scargo/scargo
+#        flit build
+#        flit publish 
+#      env:
+#        FLIT_USERNAME: __token__
+#        FLIT_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
