@@ -12,9 +12,8 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-release-to-pypi:
-    needs: create-release
+jobs:
+  release-to-pypi:
     runs-on: ubuntu-latest
     container:
         image: spyrosoftsa/scargo-dev:1.1
