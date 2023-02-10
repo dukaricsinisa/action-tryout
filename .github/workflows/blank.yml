@@ -9,15 +9,13 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  if: "! contains(github.event.head_commit.message, 'WIP')"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
   release-to-pypi:
     runs-on: ubuntu-latest
-    container:
-        image: spyrosoftsa/scargo-dev:1.1
-        options: --user root
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -27,26 +25,9 @@ jobs:
 #      uses: actions/setup-python@v2
 #      with:
 #        python-version: 3.8
-    - name: Install dependencies
-      run: |        
-        pip install devpi-server
-        devpi-init
-        pip install flit
-    - name: Run Devpi
-      run: nohup devpi-server &
     - name:  Run anything ...
       run: |
         echo "Sleeping"
         sleep 10
         echo "Done sleeping"
-    - name: Kill Devpi
-      run: pkill Python
-      
-#    - name: Build and upload to PyPI
-#      run: |
-#        git config --global --add safe.directory /__w/scargo/scargo
-#        flit build
-#        flit publish 
-#      env:
-#        FLIT_USERNAME: __token__
-#        FLIT_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
